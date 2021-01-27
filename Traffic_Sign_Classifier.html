@@ -14439,7 +14439,7 @@ Number of classes = 43
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[18]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">### Data exploration visualization code goes here.</span>
@@ -14892,7 +14892,7 @@ Number of classes = 43
 <span class="n">tf</span><span class="o">.</span><span class="n">disable_eager_execution</span><span class="p">()</span>
 <span class="n">rate</span> <span class="o">=</span> <span class="mf">0.001</span>
 <span class="n">epochs</span> <span class="o">=</span> <span class="mi">30</span>
-<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">128</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="n">mu</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">sigma</span> <span class="o">=</span> <span class="mf">0.1</span>
 
@@ -15053,9 +15053,13 @@ sets imply underfitting. A high accuracy on the training set but low accuracy on
 <span class="sd">accuracy_operation = calc_accuracy(features, onehot_labels)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="s1">&#39;mode.ckpt.index&#39;</span><span class="p">)):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File exists&quot;</span><span class="p">)</span>
-        <span class="n">saver</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">save_file</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    if(os.path.isfile(&#39;mode.ckpt.index&#39;)):</span>
+<span class="sd">        print(&quot;File exists&quot;)</span>
+<span class="sd">        saver.restore(sess, save_file)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This code is never reached&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File does not exist&quot;</span><span class="p">)</span>
         <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">())</span>
@@ -15064,8 +15068,10 @@ sets imply underfitting. A high accuracy on the training set but low accuracy on
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Roka&#39;</span><span class="p">,</span> <span class="n">num_examples</span><span class="p">,</span> <span class="n">num_batches</span><span class="p">)</span>
         <span class="c1">#validation_accuracy = sess.run(accuracy_operation, feed_dict={features:X_valid, labels:y_valid})</span>
         <span class="c1">#print(&quot;Bamba accuracy = {:.3f}&quot;.format(validation_accuracy))</span>
-
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+        
+        <span class="n">validation_accuracy</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">validation_accuracy</span> <span class="o">&lt;</span> <span class="mf">0.93</span><span class="p">):</span>
             <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">shuffle</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_batches</span><span class="p">):</span>
                 <span class="n">x_batch</span> <span class="o">=</span> <span class="n">X_train</span><span class="p">[</span><span class="n">j</span><span class="o">*</span><span class="n">batch_size</span><span class="p">:(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">batch_size</span><span class="p">]</span>
@@ -15074,13 +15080,14 @@ sets imply underfitting. A high accuracy on the training set but low accuracy on
             <span class="n">train_accuracy</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">accuracy_operation</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">features</span><span class="p">:</span><span class="n">X_train</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span><span class="n">y_train</span><span class="p">,</span> <span class="n">keep_prob</span><span class="p">:</span><span class="mf">0.75</span><span class="p">})</span>
             <span class="n">validation_accuracy</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">accuracy_operation</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">features</span><span class="p">:</span><span class="n">X_valid</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span><span class="n">y_valid</span><span class="p">,</span> <span class="n">keep_prob</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;EPOCH </span><span class="si">{}</span><span class="s2">...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Train accuracy = </span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">train_accuracy</span><span class="p">))</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Validation accuracy = </span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">validation_accuracy</span><span class="p">))</span>
             <span class="nb">print</span><span class="p">()</span>
         <span class="n">saver</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">save_file</span><span class="p">)</span>
     
-    <span class="n">test_accuracy</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">accuracy_operation</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">features</span><span class="p">:</span><span class="n">X_test</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span><span class="n">y_test</span><span class="p">,</span> <span class="n">keep_prob</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test accuracy = </span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_accuracy</span><span class="p">))</span>
+    <span class="c1">#test_accuracy = sess.run(accuracy_operation, feed_dict={features:X_test, labels:y_test, keep_prob:1})</span>
+    <span class="c1">#print(&quot;Test accuracy = {:.3f}&quot;.format(test_accuracy))</span>
         
     
 </pre></div>
@@ -15102,9 +15109,147 @@ sets imply underfitting. A high accuracy on the training set but low accuracy on
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>File exists
-INFO:tensorflow:Restoring parameters from ./mode.ckpt
-Test accuracy = 0.923
+<pre>File does not exist
+Roka 34799 348
+EPOCH 1...
+Train accuracy = 0.680
+Validation accuracy = 0.731
+
+EPOCH 2...
+Train accuracy = 0.796
+Validation accuracy = 0.821
+
+EPOCH 3...
+Train accuracy = 0.840
+Validation accuracy = 0.847
+
+EPOCH 4...
+Train accuracy = 0.874
+Validation accuracy = 0.870
+
+EPOCH 5...
+Train accuracy = 0.892
+Validation accuracy = 0.881
+
+EPOCH 6...
+Train accuracy = 0.898
+Validation accuracy = 0.888
+
+EPOCH 7...
+Train accuracy = 0.910
+Validation accuracy = 0.897
+
+EPOCH 8...
+Train accuracy = 0.913
+Validation accuracy = 0.886
+
+EPOCH 9...
+Train accuracy = 0.922
+Validation accuracy = 0.906
+
+EPOCH 10...
+Train accuracy = 0.924
+Validation accuracy = 0.906
+
+EPOCH 11...
+Train accuracy = 0.929
+Validation accuracy = 0.908
+
+EPOCH 12...
+Train accuracy = 0.933
+Validation accuracy = 0.909
+
+EPOCH 13...
+Train accuracy = 0.932
+Validation accuracy = 0.909
+
+EPOCH 14...
+Train accuracy = 0.937
+Validation accuracy = 0.917
+
+EPOCH 15...
+Train accuracy = 0.939
+Validation accuracy = 0.916
+
+EPOCH 16...
+Train accuracy = 0.940
+Validation accuracy = 0.916
+
+EPOCH 17...
+Train accuracy = 0.941
+Validation accuracy = 0.921
+
+EPOCH 18...
+Train accuracy = 0.945
+Validation accuracy = 0.923
+
+EPOCH 19...
+Train accuracy = 0.944
+Validation accuracy = 0.918
+
+EPOCH 20...
+Train accuracy = 0.945
+Validation accuracy = 0.927
+
+EPOCH 21...
+Train accuracy = 0.947
+Validation accuracy = 0.926
+
+EPOCH 22...
+Train accuracy = 0.947
+Validation accuracy = 0.930
+
+EPOCH 23...
+Train accuracy = 0.950
+Validation accuracy = 0.930
+
+EPOCH 24...
+Train accuracy = 0.952
+Validation accuracy = 0.924
+
+EPOCH 25...
+Train accuracy = 0.953
+Validation accuracy = 0.933
+
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+    <span class="n">saver</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">sess</span><span class="p">,</span> <span class="n">save_file</span><span class="p">)</span>
+    <span class="n">test_accuracy</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">accuracy_operation</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">features</span><span class="p">:</span><span class="n">X_test</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span><span class="n">y_test</span><span class="p">,</span> <span class="n">keep_prob</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test accuracy = </span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_accuracy</span><span class="p">))</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>INFO:tensorflow:Restoring parameters from ./mode.ckpt
+Test accuracy = 0.911
 </pre>
 </div>
 </div>
@@ -15128,7 +15273,7 @@ Test accuracy = 0.923
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">### Load the images and plot them here.</span>
@@ -15137,7 +15282,7 @@ Test accuracy = 0.923
 <span class="kn">import</span> <span class="nn">matplotlib.image</span> <span class="k">as</span> <span class="nn">mpimg</span>
 <span class="n">y_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
 <span class="n">x_new</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">images</span> <span class="o">=</span> <span class="p">[</span> <span class="p">(</span><span class="s1">&#39;children_crossing.png&#39;</span><span class="p">,</span> <span class="mi">28</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;double_curve.png&#39;</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;pedestrians.png&#39;</span><span class="p">,</span> <span class="mi">27</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;traffic_signals.png&#39;</span><span class="p">,</span> <span class="mi">26</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;wild_animals.png&#39;</span><span class="p">,</span> <span class="mi">31</span><span class="p">)]</span>
+<span class="n">images</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;speed60.png&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">),(</span><span class="s1">&#39;roundabout.png&#39;</span><span class="p">,</span> <span class="mi">40</span><span class="p">),(</span><span class="s1">&#39;yield.png&#39;</span><span class="p">,</span> <span class="mi">13</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;children_crossing.png&#39;</span><span class="p">,</span> <span class="mi">28</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;double_curve.png&#39;</span><span class="p">,</span> <span class="mi">21</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;pedestrians.png&#39;</span><span class="p">,</span> <span class="mi">27</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;traffic_signals.png&#39;</span><span class="p">,</span> <span class="mi">26</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;wild_animals.png&#39;</span><span class="p">,</span> <span class="mi">31</span><span class="p">)]</span>
 <span class="k">for</span> <span class="n">image</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
     <span class="n">img</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">image</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">y_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_new</span><span class="p">,</span> <span class="n">image</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -15189,12 +15334,12 @@ Test accuracy = 0.923
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>(899, 1024, 3)
+<pre>(250, 250, 3)
 (32, 32, 3)
 (1, 32, 32, 3)
 x_new is empty
 SHAP (1, 32, 32, 1)
-(899, 1024, 3)
+(250, 250, 3)
 (32, 32, 3)
 (1, 32, 32, 3)
 SHAP (2, 32, 32, 1)
@@ -15210,6 +15355,18 @@ SHAP (4, 32, 32, 1)
 (32, 32, 3)
 (1, 32, 32, 3)
 SHAP (5, 32, 32, 1)
+(899, 1024, 3)
+(32, 32, 3)
+(1, 32, 32, 3)
+SHAP (6, 32, 32, 1)
+(899, 1024, 3)
+(32, 32, 3)
+(1, 32, 32, 3)
+SHAP (7, 32, 32, 1)
+(899, 1024, 3)
+(32, 32, 3)
+(1, 32, 32, 3)
+SHAP (8, 32, 32, 1)
 </pre>
 </div>
 </div>
@@ -15226,7 +15383,7 @@ SHAP (5, 32, 32, 1)
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">### Run the predictions here and use the model to output the prediction for each image.</span>
@@ -15258,51 +15415,78 @@ SHAP (5, 32, 32, 1)
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>INFO:tensorflow:Restoring parameters from ./mode.ckpt
-[[0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 1.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00]
- [0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 1.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 1.4098204e-33 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00]
- [0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 1.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00]
- [0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 1.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00]
- [0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 1.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00 0.0000000e+00
-  0.0000000e+00 0.0000000e+00 0.0000000e+00]]
+[[0.000000e+00 0.000000e+00 0.000000e+00 1.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00]
+ [0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  1.000000e+00 0.000000e+00 0.000000e+00]
+ [0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 1.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00]
+ [0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 1.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00]
+ [0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00]
+ [0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00]
+ [0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 7.938287e-22 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00]
+ [0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+  0.000000e+00 0.000000e+00 0.000000e+00]]
 </pre>
 </div>
 </div>
@@ -15319,7 +15503,7 @@ SHAP (5, 32, 32, 1)
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">### Calculate the accuracy for these 5 new images. </span>
@@ -15350,8 +15534,8 @@ SHAP (5, 32, 32, 1)
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>INFO:tensorflow:Restoring parameters from ./mode.ckpt
-&lt;tensorflow.python.client.session.Session object at 0x0000023544B121C0&gt;
-New accuracy = 0.600
+&lt;tensorflow.python.client.session.Session object at 0x000001482CEEA310&gt;
+New accuracy = 0.875
 </pre>
 </div>
 </div>
@@ -15401,7 +15585,7 @@ a = np.array([[ 0.24879643,  0.07032244,  0.12641572,  0.34763842,  0.07893497,
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">### Print out the top five softmax probabilities for the predictions on the German traffic sign images found on the web. </span>
@@ -15431,19 +15615,28 @@ a = np.array([[ 0.24879643,  0.07032244,  0.12641572,  0.34763842,  0.07893497,
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>INFO:tensorflow:Restoring parameters from ./mode.ckpt
-TopKV2(values=array([[1.0000000e+00, 0.0000000e+00, 0.0000000e+00, 0.0000000e+00,
-        0.0000000e+00],
-       [1.0000000e+00, 1.4098204e-33, 0.0000000e+00, 0.0000000e+00,
-        0.0000000e+00],
-       [1.0000000e+00, 0.0000000e+00, 0.0000000e+00, 0.0000000e+00,
-        0.0000000e+00],
-       [1.0000000e+00, 0.0000000e+00, 0.0000000e+00, 0.0000000e+00,
-        0.0000000e+00],
-       [1.0000000e+00, 0.0000000e+00, 0.0000000e+00, 0.0000000e+00,
-        0.0000000e+00]], dtype=float32), indices=array([[28,  0,  1,  2,  3],
-       [21, 31,  0,  1,  2],
+TopKV2(values=array([[1.000000e+00, 0.000000e+00, 0.000000e+00, 0.000000e+00,
+        0.000000e+00],
+       [1.000000e+00, 0.000000e+00, 0.000000e+00, 0.000000e+00,
+        0.000000e+00],
+       [1.000000e+00, 0.000000e+00, 0.000000e+00, 0.000000e+00,
+        0.000000e+00],
+       [1.000000e+00, 0.000000e+00, 0.000000e+00, 0.000000e+00,
+        0.000000e+00],
+       [1.000000e+00, 0.000000e+00, 0.000000e+00, 0.000000e+00,
+        0.000000e+00],
+       [1.000000e+00, 0.000000e+00, 0.000000e+00, 0.000000e+00,
+        0.000000e+00],
+       [1.000000e+00, 7.938287e-22, 0.000000e+00, 0.000000e+00,
+        0.000000e+00],
+       [1.000000e+00, 0.000000e+00, 0.000000e+00, 0.000000e+00,
+        0.000000e+00]], dtype=float32), indices=array([[ 3,  0,  1,  2,  4],
+       [40,  0,  1,  2,  3],
+       [13,  0,  1,  2,  3],
+       [28,  0,  1,  2,  3],
+       [21,  0,  1,  2,  3],
        [11,  0,  1,  2,  3],
-       [18,  0,  1,  2,  3],
+       [26, 11,  0,  1,  2],
        [31,  0,  1,  2,  3]]))
 </pre>
 </div>
@@ -15487,7 +15680,7 @@ TopKV2(values=array([[1.0000000e+00, 0.0000000e+00, 0.0000000e+00, 0.0000000e+00
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">### Visualize your network&#39;s feature maps here.</span>
